@@ -34,11 +34,13 @@ INSTALLED_APPS = [
 
     'playground',
     'store',
+    'store_custom',
     'tags',
     'likes',
     'debug_toolbar',
     'django.contrib.admin',
     'django.contrib.auth',
+    'django.contrib.sessions',
     'django.contrib.contenttypes',
     'django.contrib.messages',
     'django.contrib.staticfiles',
