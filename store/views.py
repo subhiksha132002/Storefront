@@ -3,9 +3,9 @@ from rest_framework.decorators import  api_view
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.viewsets import ModelViewSet
-from .models import OrderItem, Product,Collection
+from .models import OrderItem, Product,Collection,Review
 from django.db.models import Count
-from .serializers import ProductSerializer,CollectionSerializer
+from .serializers import ProductSerializer,CollectionSerializer,ReviewSerializer
 
 class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
@@ -26,10 +26,14 @@ class CollectionViewSet(ModelViewSet):
     serializer_class = CollectionSerializer
 
     def destroy(self,request,*args,**kwargs):
-        if collection.products.count() > 0:
-            return Response({"error":'Collection cannot be deleted because it includes one or more products.'})
+        if Product.objects.filter(collection_id=kwargs['pk']):
+            return Response({'error': 'Collection cannot be deleted because it includes one or more products.'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
         
         return super().destroy(self,request,*args,**kwargs)
+    
+class ReviewViewSet(ModelViewSet):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
 
 
    
