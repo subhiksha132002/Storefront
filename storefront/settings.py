@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'store_custom',
     'tags',
     'likes',
+    'rest_framework',
     'debug_toolbar',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -137,3 +138,7 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    'COERCE_DECIMAL_TO_STRING': False
+}
