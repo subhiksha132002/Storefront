@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'likes',
     'rest_framework',
     'debug_toolbar',
+    'django_filters',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.sessions',
