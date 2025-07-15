@@ -4,9 +4,10 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter,OrderingFilter
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.viewsets import ModelViewSet
-from .models import OrderItem, Product,Collection,Review
-from .serializers import ProductSerializer,CollectionSerializer,ReviewSerializer
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
+from rest_framework.mixins import CreateModelMixin,RetrieveModelMixin,DestroyModelMixin
+from .models import OrderItem, Product,Collection,Review,Cart,CartItem
+from .serializers import ProductSerializer,CollectionSerializer,ReviewSerializer,CartSerializer,CartItemSerializer
 from .filters import ProductFilter
 from .pagination import DefaultPagination
 
@@ -51,4 +52,18 @@ class ReviewViewSet(ModelViewSet):
         return {'product_id': self.kwargs['product_pk']}
    
 
-    
+class CartViewSet(CreateModelMixin,
+                  RetrieveModelMixin,
+                  DestroyModelMixin,
+                  GenericViewSet):#using custom viewset i.e CreateModelMixin,GenericViewSet as we don't need to implement list and update operations here
+    queryset = Cart.objects.prefetch_related('items__product').all()
+    serializer_class = CartSerializer
+
+class CartItemViewSet(ModelViewSet):
+    serializer_class = CartItemSerializer
+
+    def get_queryset(self):
+        return CartItem.objects\
+            .filter(cart_id=self.kwargs['cart_pk'])\
+            .select_related('product')
+ 
