@@ -8,10 +8,9 @@ from rest_framework.permissions import IsAuthenticated,IsAdminUser,AllowAny
 from rest_framework import status
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework.mixins import CreateModelMixin,RetrieveModelMixin,DestroyModelMixin,UpdateModelMixin
-
-from store.permissions import IsAdminOrReadOnly
-from .models import OrderItem, Product,Collection,Review,Cart,CartItem,Customer
-from .serializers import ProductSerializer,CollectionSerializer,ReviewSerializer,CartSerializer,CartItemSerializer,AddCartItemSerializer,UpdateCartItemSerializer,CustomerSerializer
+from store.permissions import IsAdminOrReadOnly,ViewCustomerHistoryPermission
+from .models import OrderItem, Product,Collection,Review,Cart,CartItem,Customer,Order
+from .serializers import ProductSerializer,CollectionSerializer,ReviewSerializer,CartSerializer,CartItemSerializer,AddCartItemSerializer,UpdateCartItemSerializer,CustomerSerializer,OrderSerializer
 from .filters import ProductFilter
 from .pagination import DefaultPagination
 
@@ -88,6 +87,11 @@ class CustomerViewSet(ModelViewSet):
     serializer_class = CustomerSerializer
     permission_classes = [IsAdminUser]
 
+    @action(detail=True,permission_classes= [ViewCustomerHistoryPermission])
+    def history(self,request,pk):
+        return Response('ok')
+
+
     @action(detail=False,methods=['GET','PUT'],permission_classes= [IsAuthenticated])
     def me(self,request):
         (customer,created)= Customer.objects.get_or_create(user_id=request.user.id)
@@ -101,5 +105,6 @@ class CustomerViewSet(ModelViewSet):
             return Response(serializer.data)
        
 
-
- 
+class OrderViewSet(ModelViewSet):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
